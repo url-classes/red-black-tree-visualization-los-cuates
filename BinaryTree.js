@@ -31,6 +31,30 @@ class BinaryTree {
         }
     }
 
+    inOrder(node = this.root) {
+        if (node !== null) {
+            this.inOrder(node.left);
+            console.log(node.value);
+            this.inOrder(node.right);
+        }
+    }
+
+    preOrder(node = this.root) {
+        if (node !== null) {
+            console.log(node.value);
+            this.preOrder(node.left);
+            this.preOrder(node.right);
+        }
+    }
+
+    postOrder(node = this.root) {
+        if (node !== null) {
+            this.postOrder(node.left);
+            this.postOrder(node.right);
+            console.log(node.value);
+        }
+    }
+
     drawTree() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.drawNode(this.root, this.canvas.width / 2, 40, this.canvas.width / 4);
@@ -44,7 +68,7 @@ class BinaryTree {
             this.ctx.fill();
             this.ctx.fillStyle = '#fff';
             this.ctx.fillText(node.value, x - 10, y + 5);
-            
+
             if (node.left) {
                 this.ctx.beginPath();
                 this.ctx.moveTo(x, y);
@@ -60,5 +84,13 @@ class BinaryTree {
                 this.drawNode(node.right, x + offset, y + 60, offset / 2);
             }
         }
+    }
+}
+
+class TreeNode {
+    constructor(value) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
     }
 }
