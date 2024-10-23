@@ -3,62 +3,142 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dibujo de Nodos Acumulativos</title>
+    <title>Visualizador de Árbol de Nodos</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #f0f0f0;
+        }
+        h1 {
+            margin-top: 20px;
+            color: #333;
+        }
+        .container {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            width: 90%;
+            margin-top: 20px;
+        }
+        .editor {
+            flex: 2;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .panel {
+            flex: 1;
+            margin-left: 20px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
         canvas {
-            border: 1px solid black;
-            margin-top: 10px;
+            border: 2px solid #ccc;
+            display: block;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+        label, input, button {
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        input[type="number"] {
+            padding: 8px;
+            margin-right: 10px;
+            width: 150px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .panel-buttons {
+            display: flex;
+            flex-direction: column;
+        }
+        .panel-buttons button {
+            margin-bottom: 10px;
         }
     </style>
 </head>
 <body>
 
-<h1>Inserción de Nodos</h1>
-<label for="numberInput">Ingrese un número:</label>
-<input type="number" id="numberInput" required>
-<button id="drawButton">Dibujar Nodo</button>
+<h1>Visualizador de Árbol de Nodos</h1>
 
-<canvas id="nodeCanvas" width="800" height="400"></canvas>
+<div class="container">
+    <!-- Editor de Árbol -->
+    <div class="editor">
+        <h2>Editor de Árbol</h2>
+        <label for="numberInput">Ingrese un número:</label>
+        <input type="number" id="numberInput" required>
+        <button id="drawButton">Agregar Nodo</button>
 
+        <canvas id="nodeCanvas" width="800" height="400"></canvas>
+    </div>
+
+    <!-- Panel de Control -->
+    <div class="panel">
+        <h2>Panel de Control</h2>
+        <div class="panel-buttons">
+            <button id="inorderButton">Recorrido Inorden</button>
+            <button id="preorderButton">Recorrido Preorden</button>
+            <button id="postorderButton">Recorrido Postorden</button>
+        </div>
+    </div>
+</div>
+
+<!-- Importar archivos de JavaScript -->
+<script src="TreeNode.js"></script>
+<script src="BinaryTree.js"></script>
 <script>
     const canvas = document.getElementById('nodeCanvas');
     const ctx = canvas.getContext('2d');
     const numberInput = document.getElementById('numberInput');
     const drawButton = document.getElementById('drawButton');
+    const inorderButton = document.getElementById('inorderButton');
+    const preorderButton = document.getElementById('preorderButton');
+    const postorderButton = document.getElementById('postorderButton');
 
-    let nodeCount = 0; // Contador de nodos dibujados
+    const tree = new BinaryTree(canvas); // Pasar el canvas al constructor
 
     drawButton.addEventListener('click', () => {
         const number = parseInt(numberInput.value);
         if (!isNaN(number)) {
-            drawNode(number); // Dibuja el nodo con el número ingresado
-            numberInput.value = ''; // Limpia el campo de entrada
+            tree.insert(number);
+            numberInput.value = '';
         }
     });
 
-    function drawNode(value) {
-        const x = 100 + nodeCount * 120; // Espacio horizontal para cada nodo
-        const y = canvas.height / 2; // Posición vertical centrada
-        const radius = 20; // Radio más pequeño para el círculo
+    inorderButton.addEventListener('click', () => {
+        const result = tree.inorder(tree.root);
+        alert('Recorrido Inorden: ' + result.join(', '));
+    });
 
-        // Dibuja el nodo
-        ctx.beginPath();
-        ctx.arc(x, y, radius, 0, Math.PI * 2); // Dibuja un círculo
-        ctx.fillStyle = 'blue'; // Color del nodo
-        ctx.fill();
-        ctx.stroke();
+    preorderButton.addEventListener('click', () => {
+        const result = tree.preorder(tree.root);
+        alert('Recorrido Preorden: ' + result.join(', '));
+    });
 
-        // Dibuja el texto del nodo
-        ctx.fillStyle = 'white'; // Color del texto
-        ctx.font = '24px Arial'; // Aumentar tamaño del texto
-        ctx.fillText(value, x - 10, y + 8); // Dibuja el número en el centro del nodo
-
-        nodeCount++; // Incrementa el contador de nodos
-    }
+    postorderButton.addEventListener('click', () => {
+        const result = tree.postorder(tree.root);
+        alert('Recorrido Postorden: ' + result.join(', '));
+    });
 </script>
 
 </body>
