@@ -75,6 +75,15 @@
         .panel-buttons button {
             margin-bottom: 10px;
         }
+        input[type="text"] {
+            padding: 8px;
+            margin-top: 10px; /* Espacio entre el botón y el cuadro de texto */
+            width: 100%; /* Ajusta el ancho para que coincida con los botones */
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            background-color: #f9f9f9;
+        }
     </style>
 </head>
 <body>
@@ -96,9 +105,11 @@
     <div class="panel">
         <h2>Panel de Control</h2>
         <div class="panel-buttons">
-            <button id="inorderButton">Recorrido Inorden</button>
             <button id="preorderButton">Recorrido Preorden</button>
+            <button id="inorderButton">Recorrido Inorden</button>
             <button id="postorderButton">Recorrido Postorden</button>
+            <!-- Cuadro de texto para mostrar el recorrido -->
+            <input type="text" id="traversalOutput" placeholder="Resultado del recorrido" readonly>
         </div>
     </div>
 </div>
@@ -122,22 +133,26 @@
         if (!isNaN(number)) {
             tree.insert(number);
             numberInput.value = '';
+            tree.draw(); // Redibujar el árbol después de insertar un nuevo nodo
         }
-    });
-
-    inorderButton.addEventListener('click', () => {
-        const result = tree.inorder(tree.root);
-        alert('Recorrido Inorden: ' + result.join(', '));
     });
 
     preorderButton.addEventListener('click', () => {
         const result = tree.preorder(tree.root);
-        alert('Recorrido Preorden: ' + result.join(', '));
+        document.getElementById('traversalOutput').value = 'Recorrido Preorden: ' + result.join(', ');
+        tree.draw(); // Redibujar el árbol
+    });
+    
+    inorderButton.addEventListener('click', () => {
+        const result = tree.inorder(tree.root);
+        document.getElementById('traversalOutput').value = 'Recorrido Inorden: ' + result.join(', ');
+        tree.draw(); // Redibujar el árbol
     });
 
     postorderButton.addEventListener('click', () => {
         const result = tree.postorder(tree.root);
-        alert('Recorrido Postorden: ' + result.join(', '));
+        document.getElementById('traversalOutput').value = 'Recorrido Postorden: ' + result.join(', ');
+        tree.draw(); // Redibujar el árbol
     });
 </script>
 
