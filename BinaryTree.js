@@ -31,34 +31,28 @@ class BinaryTree {
         }
     }
 
-    // Método para recorrido in-order (izquierda, raíz, derecha)
-    inorder(node, result = []) {
+    inOrder(node = this.root) {
         if (node !== null) {
-            this.inorder(node.left, result);
-            result.push(node.value);
-            this.inorder(node.right, result);
+            this.inOrder(node.left);
+            console.log(node.value);
+            this.inOrder(node.right);
         }
-        return result;
     }
 
-    // Método para recorrido pre-order (raíz, izquierda, derecha)
-    preorder(node, result = []) {
+    preOrder(node = this.root) {
         if (node !== null) {
-            result.push(node.value);
-            this.preorder(node.left, result);
-            this.preorder(node.right, result);
+            console.log(node.value);
+            this.preOrder(node.left);
+            this.preOrder(node.right);
         }
-        return result;
     }
 
-    // Método para recorrido post-order (izquierda, derecha, raíz)
-    postorder(node, result = []) {
+    postOrder(node = this.root) {
         if (node !== null) {
-            this.postorder(node.left, result);
-            this.postorder(node.right, result);
-            result.push(node.value);
+            this.postOrder(node.left);
+            this.postOrder(node.right);
+            console.log(node.value);
         }
-        return result;
     }
 
     drawTree() {
