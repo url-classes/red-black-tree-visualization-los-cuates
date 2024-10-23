@@ -31,28 +31,34 @@ class BinaryTree {
         }
     }
 
-    inOrder(node = this.root) {
+    // Método para recorrido in-order (izquierda, raíz, derecha)
+    inorder(node, result = []) {
         if (node !== null) {
-            this.inOrder(node.left);
-            console.log(node.value);
-            this.inOrder(node.right);
+            this.inorder(node.left, result);
+            result.push(node.value);
+            this.inorder(node.right, result);
         }
+        return result;
     }
 
-    preOrder(node = this.root) {
+    // Método para recorrido pre-order (raíz, izquierda, derecha)
+    preorder(node, result = []) {
         if (node !== null) {
-            console.log(node.value);
-            this.preOrder(node.left);
-            this.preOrder(node.right);
+            result.push(node.value);
+            this.preorder(node.left, result);
+            this.preorder(node.right, result);
         }
+        return result;
     }
 
-    postOrder(node = this.root) {
+    // Método para recorrido post-order (izquierda, derecha, raíz)
+    postorder(node, result = []) {
         if (node !== null) {
-            this.postOrder(node.left);
-            this.postOrder(node.right);
-            console.log(node.value);
+            this.postorder(node.left, result);
+            this.postorder(node.right, result);
+            result.push(node.value);
         }
+        return result;
     }
 
     drawTree() {
@@ -94,3 +100,4 @@ class TreeNode {
         this.right = null;
     }
 }
+
