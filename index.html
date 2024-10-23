@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dibujo de Nodos Acumulativos</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        canvas {
+            border: 1px solid black;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Inserción de Nodos</h1>
+<label for="numberInput">Ingrese un número:</label>
+<input type="number" id="numberInput" required>
+<button id="drawButton">Dibujar Nodo</button>
+
+<canvas id="nodeCanvas" width="800" height="400"></canvas>
+
+<script>
+    const canvas = document.getElementById('nodeCanvas');
+    const ctx = canvas.getContext('2d');
+    const numberInput = document.getElementById('numberInput');
+    const drawButton = document.getElementById('drawButton');
+
+    let nodeCount = 0; // Contador de nodos dibujados
+
+    drawButton.addEventListener('click', () => {
+        const number = parseInt(numberInput.value);
+        if (!isNaN(number)) {
+            drawNode(number); // Dibuja el nodo con el número ingresado
+            numberInput.value = ''; // Limpia el campo de entrada
+        }
+    });
+
+    function drawNode(value) {
+        const x = 100 + nodeCount * 120; // Espacio horizontal para cada nodo
+        const y = canvas.height / 2; // Posición vertical centrada
+        const radius = 20; // Radio más pequeño para el círculo
+
+        // Dibuja el nodo
+        ctx.beginPath();
+        ctx.arc(x, y, radius, 0, Math.PI * 2); // Dibuja un círculo
+        ctx.fillStyle = 'blue'; // Color del nodo
+        ctx.fill();
+        ctx.stroke();
+
+        // Dibuja el texto del nodo
+        ctx.fillStyle = 'white'; // Color del texto
+        ctx.font = '24px Arial'; // Aumentar tamaño del texto
+        ctx.fillText(value, x - 10, y + 8); // Dibuja el número en el centro del nodo
+
+        nodeCount++; // Incrementa el contador de nodos
+    }
+</script>
+
+</body>
+</html>

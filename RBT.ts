@@ -130,6 +130,10 @@ export class RBTree {
     }
 
     public insert(data: number): void {
+        //Este if comprueba que se inserten numeros, no letras
+        if (typeof data !== 'number') {
+            throw new Error("El valor insertado debe ser un número");
+        }
         let newNode: NodeRBT = new NodeRBT(data);
         let parent: NodeRBT = this.leaf;
         let current: NodeRBT = this.root;
@@ -285,4 +289,5 @@ export class RBTree {
         }
         x.setNodeAsBlack();
     }
+    
 }
