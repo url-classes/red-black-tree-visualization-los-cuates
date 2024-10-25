@@ -108,8 +108,12 @@
             <button id="preorderButton">Recorrido Preorden</button>
             <button id="inorderButton">Recorrido Inorden</button>
             <button id="postorderButton">Recorrido Postorden</button>
+            <!-- Campo de entrada para buscar un nodo -->
+            <label for="searchInput">Buscar Nodo:</label>
+            <input type="number" id="searchInput" placeholder="Ingrese número a buscar">
+            <button id="searchButton">Buscar</button>
             <!-- Cuadro de texto para mostrar el recorrido -->
-            <input type="text" id="traversalOutput" placeholder="Resultado del recorrido" readonly>
+            <input type="text" id="traversalOutput" placeholder="Resultado" readonly>
         </div>
     </div>
 </div>
@@ -125,6 +129,8 @@
     const inorderButton = document.getElementById('inorderButton');
     const preorderButton = document.getElementById('preorderButton');
     const postorderButton = document.getElementById('postorderButton');
+    const searchButton = document.getElementById('searchButton');
+    const searchInput = document.getElementById('searchInput');
 
     const tree = new BinaryTree(canvas); // Pasar el canvas al constructor
 
@@ -142,7 +148,7 @@
         document.getElementById('traversalOutput').value = 'Recorrido Preorden: ' + result.join(', ');
         tree.draw(); // Redibujar el árbol
     });
-    
+
     inorderButton.addEventListener('click', () => {
         const result = tree.inorder(tree.root);
         document.getElementById('traversalOutput').value = 'Recorrido Inorden: ' + result.join(', ');
@@ -154,6 +160,22 @@
         document.getElementById('traversalOutput').value = 'Recorrido Postorden: ' + result.join(', ');
         tree.draw(); // Redibujar el árbol
     });
+
+    searchButton.addEventListener('click', () => {
+    const number = parseInt(searchInput.value);
+    if (!isNaN(number)) {
+        const foundNode = tree.search(number);
+        if (foundNode) {
+            document.getElementById('traversalOutput').value = `Nodo ${number} encontrado.`;
+        } else {
+            document.getElementById('traversalOutput').value = `Nodo ${number} no encontrado.`;
+        }
+    }
+});
+
+
+    
+    ;
 </script>
 
 </body>

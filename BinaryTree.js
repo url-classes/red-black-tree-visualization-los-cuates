@@ -77,205 +77,139 @@ class BinaryTree {
                 }
             }
         }
-        this.root.color = 'black'; // Asegúrate de que la raíz sea negra
+        this.root.color = 'black'; // Asegura que la raíz siempre sea negra
     }
 
     rotateLeft(node) {
-        const rightChild = node.right;
-        node.right = rightChild.left;
-        if (rightChild.left !== null) {
-            rightChild.left.parent = node;
+        const rightNode = node.right;
+        node.right = rightNode.left;
+        if (rightNode.left !== null) {
+            rightNode.left.parent = node;
         }
-        rightChild.parent = node.parent;
+        rightNode.parent = node.parent;
         if (node.parent === null) {
-            this.root = rightChild;
+            this.root = rightNode;
         } else if (node === node.parent.left) {
-            node.parent.left = rightChild;
+            node.parent.left = rightNode;
         } else {
-            node.parent.right = rightChild;
+            node.parent.right = rightNode;
         }
-        rightChild.left = node;
-        node.parent = rightChild;
+        rightNode.left = node;
+        node.parent = rightNode;
     }
 
     rotateRight(node) {
-        const leftChild = node.left;
-        node.left = leftChild.right;
-        if (leftChild.right !== null) {
-            leftChild.right.parent = node;
+        const leftNode = node.left;
+        node.left = leftNode.right;
+        if (leftNode.right !== null) {
+            leftNode.right.parent = node;
         }
-        leftChild.parent = node.parent;
+        leftNode.parent = node.parent;
         if (node.parent === null) {
-            this.root = leftChild;
-        } else if (node === node.parent.right) {
-            node.parent.right = leftChild;
+            this.root = leftNode;
+        } else if (node === node.parent.left) {
+            node.parent.left = leftNode;
         } else {
-            node.parent.left = leftChild;
+            node.parent.right = leftNode;
         }
-        leftChild.right = node;
-        node.parent = leftChild;
+        leftNode.right = node;
+        node.parent = leftNode;
     }
 
     drawTree() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        this.drawNode(this.root, this.canvas.width / 2, 40, this.canvas.width / 4);
+        this.drawNode(this.root, this.canvas.width / 2, 40, 100);
     }
 
     drawNode(node, x, y, offset) {
-        if (node !== null) {
-            // Cambia el color de relleno según el color del nodo
-            this.ctx.fillStyle = node.color === 'red' ? 'red' : 'black';
+        if (node) {
+            // Dibuja el nodo
             this.ctx.beginPath();
             this.ctx.arc(x, y, 20, 0, Math.PI * 2);
+            this.ctx.fillStyle = node.color;
             this.ctx.fill();
-            this.ctx.fillStyle = '#fff';
-            this.ctx.fillText(node.value, x - 10, y + 5);
-
+            this.ctx.stroke();
+            this.ctx.fillStyle = 'white';
+            this.ctx.fillText(node.value, x - 5, y + 5);
+            this.ctx.font = '24px Arial';
+    
+            // Dibuja la línea hacia el nodo izquierdo
             if (node.left) {
                 this.ctx.beginPath();
-                this.ctx.moveTo(x, y);
-                this.ctx.lineTo(x - offset, y + 60);
+                this.ctx.moveTo(x, y + 20); // Parte inferior del nodo actual
+                this.ctx.lineTo(x - offset, y + 60 - 20); // Parte superior del nodo izquierdo
                 this.ctx.stroke();
-                this.drawNode(node.left, x - offset, y + 60, offset / 2);
             }
+    
+            // Dibuja la línea hacia el nodo derecho
             if (node.right) {
                 this.ctx.beginPath();
-                this.ctx.moveTo(x, y);
-                this.ctx.lineTo(x + offset, y + 60);
+                this.ctx.moveTo(x, y + 20); // Parte inferior del nodo actual
+                this.ctx.lineTo(x + offset, y + 60 - 20); // Parte superior del nodo derecho
                 this.ctx.stroke();
-                this.drawNode(node.right, x + offset, y + 60, offset / 2);
             }
+    
+            // Llama recursivamente para los nodos izquierdo y derecho
+            this.drawNode(node.left, x - offset, y + 60, offset / 2);
+            this.drawNode(node.right, x + offset, y + 60, offset / 2);
         }
     }
     
-     inorder(node) {
-        const result = [];
-        this._inorder(node, result);
-        return result;
-    }
-
-    _inorder(node, result) {
-        if (node !== null) {
-            this._inorder(node.left, result);
-            result.push(node.value);
-            this._inorder(node.right, result);
-        }
-    }
-
     preorder(node) {
         const result = [];
-        this._preorder(node, result);
+        this.preorderTraversal(node, result);
         return result;
     }
 
-    _preorder(node, result) {
-        if (node !== null) {
+    preorderTraversal(node, result) {
+        if (node) {
             result.push(node.value);
-            this._preorder(node.left, result);
-            this._preorder(node.right, result);
+            this.preorderTraversal(node.left, result);
+            this.preorderTraversal(node.right, result);
         }
-    }
-
-    postorder(node) {
-        const result = [];
-        this._postorder(node, result);
-        return result;
-    }
-
-    _postorder(node, result) {
-        if (node !== null) {
-            this._postorder(node.left, result);
-            this._postorder(node.right, result);
-            result.push(node.value);
-        }
-    }
-
-    drawTraversal(traversal) {
-        // Dibuja el árbol de nuevo
-        this.drawTree(); // Redibuja el árbol antes de dibujar los recorridos
-    
-        // Espaciado horizontal y vertical para el recorrido
-        const xOffset = 100; // Espaciado horizontal
-        const yOffset = this.canvas.height - 100; // Espaciado vertical desde la parte inferior
-    
-        // Dibuja cada nodo del recorrido en una línea horizontal
-        traversal.forEach((value, index) => {
-            const x = (index + 1) * xOffset; // Calcula la posición x
-            this.ctx.fillStyle = '#007bff';
-            this.ctx.beginPath();
-            this.ctx.arc(x, yOffset, 20, 0, Math.PI * 2); // Dibuja un círculo
-            this.ctx.fill();
-            this.ctx.fillStyle = '#fff';
-            this.ctx.fillText(value, x - 10, yOffset + 5); // Dibuja el valor del nodo
-        });
     }
 
     inorder(node) {
         const result = [];
-        this._inorder(node, result);
+        this.inorderTraversal(node, result);
         return result;
     }
 
-    _inorder(node, result) {
-        if (node !== null) {
-            this._inorder(node.left, result);
+    inorderTraversal(node, result) {
+        if (node) {
+            this.inorderTraversal(node.left, result);
             result.push(node.value);
-            this._inorder(node.right, result);
-        }
-    }
-
-    preorder(node) {
-        const result = [];
-        this._preorder(node, result);
-        return result;
-    }
-
-    _preorder(node, result) {
-        if (node !== null) {
-            result.push(node.value);
-            this._preorder(node.left, result);
-            this._preorder(node.right, result);
+            this.inorderTraversal(node.right, result);
         }
     }
 
     postorder(node) {
         const result = [];
-        this._postorder(node, result);
+        this.postorderTraversal(node, result);
         return result;
     }
 
-    _postorder(node, result) {
-        if (node !== null) {
-            this._postorder(node.left, result);
-            this._postorder(node.right, result);
+    postorderTraversal(node, result) {
+        if (node) {
+            this.postorderTraversal(node.left, result);
+            this.postorderTraversal(node.right, result);
             result.push(node.value);
         }
     }
 
-    drawTraversal(traversal) {
-        // Dibuja el árbol de nuevo
-        this.drawTree(); // Redibuja el árbol antes de dibujar los recorridos
-    
-        // Espaciado horizontal y vertical para el recorrido
-        const xOffset = 100; // Espaciado horizontal
-        const yOffset = this.canvas.height - 100; // Espaciado vertical desde la parte inferior
-    
-        // Dibuja cada nodo del recorrido en una línea horizontal
-        traversal.forEach((value, index) => {
-            const x = (index + 1) * xOffset; // Calcula la posición x
-            this.ctx.fillStyle = '#007bff';
-            this.ctx.beginPath();
-            this.ctx.arc(x, yOffset, 20, 0, Math.PI * 2); // Dibuja un círculo
-            this.ctx.fill();
-            this.ctx.fillStyle = '#fff';
-            this.ctx.fillText(value, x - 10, yOffset + 5); // Dibuja el valor del nodo
-        });
+    search(value) {
+        return this.searchNode(this.root, value);
     }
-    
-    
+
+    searchNode(node, value) {
+        if (node === null) {
+            return null; // Nodo no encontrado
+        }
+        if (node.value === value) {
+            return node; // Nodo encontrado
+        }
+        return value < node.value
+            ? this.searchNode(node.left, value) // Busca en el subárbol izquierdo
+            : this.searchNode(node.right, value); // Busca en el subárbol derecho
+    }
 }
-    
-    
-
-
-
