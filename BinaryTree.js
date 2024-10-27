@@ -34,6 +34,10 @@ class BinaryTree {
             }
         }
     }
+    clear() {
+        this.root = null; // Establece la raíz en null
+        this.drawTree(); // Redibuja el árbol vacío
+    }
 
     fixTree(node) {
         while (node !== this.root && node.parent.color === 'red') {
