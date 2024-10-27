@@ -117,8 +117,10 @@ class BinaryTree {
     }
 
     drawTree() {
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        this.drawNode(this.root, this.canvas.width / 2, 40, 100);
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height); // Limpia el canvas antes de dibujar
+        if (this.root) {
+            this.drawNode(this.root, this.canvas.width / 2, 30, 100); // Llama al método para dibujar el árbol
+        }
     }
 
     drawNode(node, x, y, offset) {
@@ -132,7 +134,7 @@ class BinaryTree {
             this.ctx.fillStyle = 'white';
             this.ctx.fillText(node.value, x - 5, y + 5);
             this.ctx.font = '24px Arial';
-    
+
             // Dibuja la línea hacia el nodo izquierdo
             if (node.left) {
                 this.ctx.beginPath();
@@ -140,7 +142,7 @@ class BinaryTree {
                 this.ctx.lineTo(x - offset, y + 60 - 20); // Parte superior del nodo izquierdo
                 this.ctx.stroke();
             }
-    
+
             // Dibuja la línea hacia el nodo derecho
             if (node.right) {
                 this.ctx.beginPath();
@@ -148,13 +150,13 @@ class BinaryTree {
                 this.ctx.lineTo(x + offset, y + 60 - 20); // Parte superior del nodo derecho
                 this.ctx.stroke();
             }
-    
+
             // Llama recursivamente para los nodos izquierdo y derecho
             this.drawNode(node.left, x - offset, y + 60, offset / 2);
             this.drawNode(node.right, x + offset, y + 60, offset / 2);
         }
     }
-    
+
     preorder(node) {
         const result = [];
         this.preorderTraversal(node, result);
@@ -188,21 +190,6 @@ class BinaryTree {
         this.postorderTraversal(node, result);
         return result;
     }
-    clear() {
-        this.root = null; // Limpia el árbol al establecer la raíz como null
-        this.draw(); // Redibuja el árbol para mostrar que está vacío
-    }
-
-    // Método para dibujar el árbol
-    draw() {
-        const ctx = this.canvas.getContext('2d');
-        ctx.clearRect(0, 0, this.canvas.width, this.canvas.height); // Limpia el canvas antes de dibujar
-        if (this.root) {
-            this.drawNode(this.root, this.canvas.width / 2, 30, 100); // Llama a tu método para dibujar el árbol
-        }
-    }
-
-
 
     postorderTraversal(node, result) {
         if (node) {
@@ -229,74 +216,100 @@ class BinaryTree {
     }
 
     delete(value) {
-        const deletedNode = this._deleteNode(this.root, value);
-        this.drawTree(); // Redibuja el árbol después de eliminar
-        return deletedNode !== null; // Retorna true si se eliminó, false si no
+        this.root = this._deleteNode(this.root, value);
+        this.drawTree(); // Asegúrate de que se redibuje el árbol
     }
+
     _deleteNode(node, value) {
         if (node === null) {
-            return false; // Nodo no encontrado
+            return null; // Si el nodo no existe, retorna null
         }
-    
-        // Busca el nodo a eliminar
         if (value < node.value) {
-            // Busca en el subárbol izquierdo
-            if (node.left) {
-                return this._deleteNode(node.left, value);
-            } else {
-                return false; // No se encontró el nodo
-            }
+            node.left = this._deleteNode(node.left, value); // Busca en el subárbol izquierdo
         } else if (value > node.value) {
-            // Busca en el subárbol derecho
-            if (node.right) {
-                return this._deleteNode(node.right, value);
-            } else {
-                return false; // No se encontró el nodo
-            }
+            node.right = this._deleteNode(node.right, value); // Busca en el subárbol derecho
         } else {
-            // Nodo encontrado, proceder a eliminar
-            if (node.left === null && node.right === null) {
-                // Caso 1: Nodo sin hijos (hoja)
-                return this._replaceNode(node, null);
-            } else if (node.left === null) {
-                // Caso 2: Nodo con un hijo derecho
-                return this._replaceNode(node, node.right);
-            } else if (node.right === null) {
-                // Caso 3: Nodo con un hijo izquierdo
-                return this._replaceNode(node, node.left);
+            // Nodo encontrado
+            if (node.left === null || node.right === null) {
+                const temp = node.left !== null ? node.left : node.right; // Nodo a eliminar
+                if (temp === null) {
+                    return null; // Nodo hoja
+                } else {
+                    return temp; // Nodo con un hijo
+                }
             } else {
-                // Caso 4: Nodo con dos hijos
-                const minNode = this._findMin(node.right);
-                node.value = minNode.value; // Reemplaza el valor del nodo a eliminar
-                // Elimina el nodo mínimo
-                node.right = this._deleteNode(node.right, minNode.value);
+                const temp = this._findMin(node.right); // Encuentra el sucesor
+                node.value = temp.value; // Reemplaza el valor
+                node.right = this._deleteNode(node.right, temp.value); // Elimina el sucesor
             }
-            return true; // Nodo eliminado
         }
+        this.fixAfterDelete(node); // Llama a fixAfterDelete siempre después de la eliminación
+        return node; // Retorna el nodo modificado
     }
-    
-    
-    _replaceNode(node, newNode) {
-        if (node === this.root) {
-            this.root = newNode; // Reemplaza la raíz
-            if (newNode !== null) {
-                newNode.parent = null; // Asegura que el nuevo nodo raíz no tenga padre
-            }
-            return newNode; // Retorna el nuevo nodo raíz
+
+    _findMin(node) {
+        while (node.left !== null) {
+            node = node.left;
         }
-        
-        if (node.parent) {
-            if (node.parent.left === node) {
-                node.parent.left = newNode; // Reemplaza en el padre izquierdo
+        return node; // Devuelve el nodo mínimo
+    }
+
+    fixAfterDelete(node) {
+        while (node !== this.root && node.color === 'black') {
+            if (node === node.parent.left) {
+                let sibling = node.parent.right;
+
+                if (sibling.color === 'red') {
+                    sibling.color = 'black';
+                    node.parent.color = 'red';
+                    this.rotateLeft(node.parent);
+                    sibling = node.parent.right;
+                }
+
+                if (sibling.left.color === 'black' && sibling.right.color === 'black') {
+                    sibling.color = 'red';
+                    node = node.parent;
+                } else {
+                    if (sibling.right.color === 'black') {
+                        sibling.left.color = 'black';
+                        sibling.color = 'red';
+                        this.rotateRight(sibling);
+                        sibling = node.parent.right;
+                    }
+                    sibling.color = node.parent.color;
+                    node.parent.color = 'black';
+                    sibling.right.color = 'black';
+                    this.rotateLeft(node.parent);
+                    node = this.root; // Salimos del bucle
+                }
             } else {
-                node.parent.right = newNode; // Reemplaza en el padre derecho
+                let sibling = node.parent.left;
+
+                if (sibling.color === 'red') {
+                    sibling.color = 'black';
+                    node.parent.color = 'red';
+                    this.rotateRight(node.parent);
+                    sibling = node.parent.left;
+                }
+
+                if (sibling.right.color === 'black' && sibling.left.color === 'black') {
+                    sibling.color = 'red';
+                    node = node.parent;
+                } else {
+                    if (sibling.left.color === 'black') {
+                        sibling.right.color = 'black';
+                        sibling.color = 'red';
+                        this.rotateLeft(sibling);
+                        sibling = node.parent.left;
+                    }
+                    sibling.color = node.parent.color;
+                    node.parent.color = 'black';
+                    sibling.left.color = 'black';
+                    this.rotateRight(node.parent);
+                    node = this.root; // Salimos del bucle
+                }
             }
         }
-    
-        if (newNode !== null) {
-            newNode.parent = node.parent; // Establece el padre del nuevo nodo
-        }
-        return newNode;
+        node.color = 'black'; // Asegúrate de que la raíz sea negra
     }
-    
 }
