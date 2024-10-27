@@ -188,6 +188,21 @@ class BinaryTree {
         this.postorderTraversal(node, result);
         return result;
     }
+    clear() {
+        this.root = null; // Limpia el árbol al establecer la raíz como null
+        this.draw(); // Redibuja el árbol para mostrar que está vacío
+    }
+
+    // Método para dibujar el árbol
+    draw() {
+        const ctx = this.canvas.getContext('2d');
+        ctx.clearRect(0, 0, this.canvas.width, this.canvas.height); // Limpia el canvas antes de dibujar
+        if (this.root) {
+            this.drawNode(this.root, this.canvas.width / 2, 30, 100); // Llama a tu método para dibujar el árbol
+        }
+    }
+
+
 
     postorderTraversal(node, result) {
         if (node) {
@@ -212,4 +227,76 @@ class BinaryTree {
             ? this.searchNode(node.left, value) // Busca en el subárbol izquierdo
             : this.searchNode(node.right, value); // Busca en el subárbol derecho
     }
+
+    delete(value) {
+        const deletedNode = this._deleteNode(this.root, value);
+        this.drawTree(); // Redibuja el árbol después de eliminar
+        return deletedNode !== null; // Retorna true si se eliminó, false si no
+    }
+    _deleteNode(node, value) {
+        if (node === null) {
+            return false; // Nodo no encontrado
+        }
+    
+        // Busca el nodo a eliminar
+        if (value < node.value) {
+            // Busca en el subárbol izquierdo
+            if (node.left) {
+                return this._deleteNode(node.left, value);
+            } else {
+                return false; // No se encontró el nodo
+            }
+        } else if (value > node.value) {
+            // Busca en el subárbol derecho
+            if (node.right) {
+                return this._deleteNode(node.right, value);
+            } else {
+                return false; // No se encontró el nodo
+            }
+        } else {
+            // Nodo encontrado, proceder a eliminar
+            if (node.left === null && node.right === null) {
+                // Caso 1: Nodo sin hijos (hoja)
+                return this._replaceNode(node, null);
+            } else if (node.left === null) {
+                // Caso 2: Nodo con un hijo derecho
+                return this._replaceNode(node, node.right);
+            } else if (node.right === null) {
+                // Caso 3: Nodo con un hijo izquierdo
+                return this._replaceNode(node, node.left);
+            } else {
+                // Caso 4: Nodo con dos hijos
+                const minNode = this._findMin(node.right);
+                node.value = minNode.value; // Reemplaza el valor del nodo a eliminar
+                // Elimina el nodo mínimo
+                node.right = this._deleteNode(node.right, minNode.value);
+            }
+            return true; // Nodo eliminado
+        }
+    }
+    
+    
+    _replaceNode(node, newNode) {
+        if (node === this.root) {
+            this.root = newNode; // Reemplaza la raíz
+            if (newNode !== null) {
+                newNode.parent = null; // Asegura que el nuevo nodo raíz no tenga padre
+            }
+            return newNode; // Retorna el nuevo nodo raíz
+        }
+        
+        if (node.parent) {
+            if (node.parent.left === node) {
+                node.parent.left = newNode; // Reemplaza en el padre izquierdo
+            } else {
+                node.parent.right = newNode; // Reemplaza en el padre derecho
+            }
+        }
+    
+        if (newNode !== null) {
+            newNode.parent = node.parent; // Establece el padre del nuevo nodo
+        }
+        return newNode;
+    }
+    
 }

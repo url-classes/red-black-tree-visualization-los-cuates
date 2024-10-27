@@ -109,6 +109,7 @@
         <label for="numberInput">Ingrese un número:</label>
         <input type="number" id="numberInput" required>
         <button id="drawButton">Agregar Nodo</button>
+        <button id="clearButton">Limpiar Árbol</button> <!-- Botón para limpiar el árbol -->
 
         <canvas id="nodeCanvas" width="800" height="400"></canvas>
     </div>
@@ -120,6 +121,7 @@
             <button id="preorderButton">Recorrido Preorden</button>
             <button id="inorderButton">Recorrido Inorden</button>
             <button id="postorderButton">Recorrido Postorden</button>
+
             <!-- Campo de entrada para buscar un nodo -->
             <label for="searchInput">Buscar Nodo:</label>
             
@@ -130,7 +132,7 @@
             <label for="searchInput">Eliminar Nodo:</label>
             
             <div class="search-container">
-                <input type="number" id="deleteInput" placeholder="Ingrese número a eliminar">
+                <input type="number" id="deleteInput" placeholder="Ingrese número a eliminar    ">
                 <button id="deleteButton">Eliminar</button>
             </div>
             <!-- Cuadro de texto para mostrar el recorrido -->
@@ -154,6 +156,7 @@
     const deleteButton = document.getElementById('deleteButton');
     const searchInput = document.getElementById('searchInput');
     const deleteInput = document.getElementById('deleteInput');
+    const clearButton = document.getElementById('clearButton');
 
     const tree = new BinaryTree(canvas); // Pasar el canvas al constructor
 
@@ -183,6 +186,12 @@
         document.getElementById('traversalOutput').value = 'Recorrido Postorden: ' + result.join(', ');
         tree.draw(); // Redibujar el árbol
     });
+
+    clearButton.addEventListener('click', () => {
+        tree.clear(); // Limpia el árbol
+        document.getElementById('traversalOutput').value = 'Árbol limpiado.'; // Mensaje de confirmación
+    });
+
     searchButton.addEventListener('click', () => {
     const number = parseInt(searchInput.value);
     if (!isNaN(number)) {
@@ -198,17 +207,15 @@
     deleteButton.addEventListener('click', () => {
     const number = parseInt(deleteInput.value);
     if (!isNaN(number)) {
-        const foundNode = tree.search(number); // Busca el nodo
-        if (foundNode) {
-            document.getElementById('traversalOutput').value = `Nodo ${number} encontrado.`; // Mensaje de encontrado
+        const deleted = tree.delete(number); // Intenta eliminar el nodo
+        if (deleted) {
+            document.getElementById('traversalOutput').value = `Nodo ${number} no eliminado.`; // Mensaje de eliminación exitosa
         } else {
-            document.getElementById('traversalOutput').value = `Nodo ${number} no encontrado.`; // Mensaje de no encontrado
+            document.getElementById('traversalOutput').value = `Nodo ${number} eliminado.`; // Mensaje de nodo no encontrado
         }
-    } 
+    }
 });
 
-
-    
     
 
 
