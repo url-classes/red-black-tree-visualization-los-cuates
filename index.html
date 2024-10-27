@@ -59,14 +59,14 @@
         }
         button {
             padding: 10px 20px;
-            background-color: #007bff;
+            background-color: #ff0000;
             color: #fff;
             border: none;
             border-radius: 4px;
             cursor: pointer;
         }
         button:hover {
-            background-color: #0056b3;
+            background-color: #0dc55a;
         }
         .panel-buttons {
             display: flex;
@@ -83,6 +83,18 @@
             border-radius: 4px;
             font-size: 16px;
             background-color: #f9f9f9;
+        }
+        .search-container {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+        }
+        .search-container input[type="number"] {
+            width: auto;
+            flex-grow: 1;
+        }
+        .search-container button {
+            margin-left: 10px;
         }
     </style>
 </head>
@@ -110,8 +122,17 @@
             <button id="postorderButton">Recorrido Postorden</button>
             <!-- Campo de entrada para buscar un nodo -->
             <label for="searchInput">Buscar Nodo:</label>
-            <input type="number" id="searchInput" placeholder="Ingrese número a buscar">
-            <button id="searchButton">Buscar</button>
+            
+            <div class="search-container">
+                <input type="number" id="searchInput" placeholder="Ingrese número a buscar">
+                <button id="searchButton">Buscar</button>
+            </div>
+            <label for="searchInput">Eliminar Nodo:</label>
+            
+            <div class="search-container">
+                <input type="number" id="deleteInput" placeholder="Ingrese número a eliminar">
+                <button id="deleteButton">Eliminar</button>
+            </div>
             <!-- Cuadro de texto para mostrar el recorrido -->
             <input type="text" id="traversalOutput" placeholder="Resultado" readonly>
         </div>
@@ -130,7 +151,9 @@
     const preorderButton = document.getElementById('preorderButton');
     const postorderButton = document.getElementById('postorderButton');
     const searchButton = document.getElementById('searchButton');
+    const deleteButton = document.getElementById('deleteButton');
     const searchInput = document.getElementById('searchInput');
+    const deleteInput = document.getElementById('deleteInput');
 
     const tree = new BinaryTree(canvas); // Pasar el canvas al constructor
 
@@ -160,23 +183,39 @@
         document.getElementById('traversalOutput').value = 'Recorrido Postorden: ' + result.join(', ');
         tree.draw(); // Redibujar el árbol
     });
-
     searchButton.addEventListener('click', () => {
     const number = parseInt(searchInput.value);
     if (!isNaN(number)) {
         const foundNode = tree.search(number);
         if (foundNode) {
-            document.getElementById('traversalOutput').value = `Nodo ${number} encontrado.`;
+            document.getElementById('traversalOutput').value = `Nodo ${number} encontrado.`; // Mensaje de encontrado
         } else {
-            document.getElementById('traversalOutput').value = `Nodo ${number} no encontrado.`;
+            document.getElementById('traversalOutput').value = `Nodo ${number} no encontrado.`; // Mensaje de no encontrado
         }
-    }
+    } 
+});
+
+    deleteButton.addEventListener('click', () => {
+    const number = parseInt(deleteInput.value);
+    if (!isNaN(number)) {
+        const foundNode = tree.search(number); // Busca el nodo
+        if (foundNode) {
+            document.getElementById('traversalOutput').value = `Nodo ${number} encontrado.`; // Mensaje de encontrado
+        } else {
+            document.getElementById('traversalOutput').value = `Nodo ${number} no encontrado.`; // Mensaje de no encontrado
+        }
+    } 
 });
 
 
     
-    ;
+    
+
+
+
+    
+    
 </script>
 
 </body>
-</html>
+</html>  
