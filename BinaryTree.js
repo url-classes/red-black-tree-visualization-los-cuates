@@ -161,6 +161,43 @@ class BinaryTree {
         }
     }
 
+    onCanvasClick(event) {
+        const rect = this.canvas.getBoundingClientRect();
+        const x = event.clientX - rect.left;
+        const y = event.clientY - rect.top;
+        const node = this.findNodeAtPosition(this.root, x, y);
+        if (node) {
+            this.showNodeData(node);
+        }
+    }
+
+    findNodeAtPosition(node, x, y) {
+        if (!node) return null;
+
+        // Calcular la distancia entre el clic y el nodo
+        const distance = Math.sqrt((x - node.x) ** 2 + (y - node.y) ** 2);
+        if (distance <= 20) { // Radio de 20 píxeles
+            return node;
+        }
+
+        // Buscar recursivamente en los hijos
+        return (
+            this.findNodeAtPosition(node.left, x, y) || 
+            this.findNodeAtPosition(node.right, x, y)
+        );
+    }
+
+    showNodeData(node) {
+        const infoDiv = document.getElementById('node-info');
+        infoDiv.innerHTML = `
+            <p><strong>Valor:</strong> ${node.value}</p>
+            <p><strong>Color:</strong> ${node.color}</p>
+            <p><strong>Padre:</strong> ${node.parent ? node.parent.value : 'Ninguno'}</p>
+            <p><strong>Hijo Izquierdo:</strong> ${node.left ? node.left.value : 'Ninguno'}</p>
+            <p><strong>Hijo Derecho:</strong> ${node.right ? node.right.value : 'Ninguno'}</p>
+        `;
+    }
+
     preorder(node) {
         const result = [];
         this.preorderTraversal(node, result);

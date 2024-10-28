@@ -5,97 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Visualizador de Árbol de Nodos</title>
     <style>
-        body {
-            font-family: 'Roboto', sans-serif;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            background-color: #f0f0f0;
-        }
-        h1 {
-            margin-top: 20px;
-            color: #333;
-        }
-        .container {
-            display: flex;
-            flex-direction: row;
-            justify-content: space-between;
-            width: 90%;
-            margin-top: 20px;
-        }
-        .editor {
-            flex: 2;
-            padding: 20px;
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-        .panel {
-            flex: 1;
-            margin-left: 20px;
-            padding: 20px;
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-        canvas {
-            border: 2px solid #ccc;
-            display: block;
-            margin-top: 20px;
-            margin-bottom: 20px;
-        }
-        label, input, button {
-            font-size: 16px;
-            margin-bottom: 10px;
-        }
-        input[type="number"] {
-            padding: 8px;
-            margin-right: 10px;
-            width: 150px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-        button {
-            padding: 10px 20px;
-            background-color: #c50c0c;
-            color: #fff;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #0dc55a;
-        }
-        .panel-buttons {
-            display: flex;
-            flex-direction: column;
-        }
-        .panel-buttons button {
-            margin-bottom: 10px;
-        }
-        input[type="text"] {
-            padding: 8px;
-            margin-top: 10px; /* Espacio entre el botón y el cuadro de texto */
-            width: 100%; /* Ajusta el ancho para que coincida con los botones */
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 16px;
-            background-color: #f9f9f9;
-        }
-        .search-container {
-            display: flex;
-            align-items: center;
-            margin-top: 10px;
-        }
-        .search-container input[type="number"] {
-            width: auto;
-            flex-grow: 1;
-        }
-        .search-container button {
-            margin-left: 10px;
-        }
+        /* Estilos conservados */
+        body { font-family: 'Roboto', sans-serif; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; background-color: #f0f0f0; }
+        h1 { margin-top: 20px; color: #333; }
+        .container { display: flex; flex-direction: row; justify-content: space-between; width: 90%; margin-top: 20px; }
+        .editor, .panel { padding: 20px; background-color: #fff; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); }
+        .editor { flex: 2; }
+        .panel { flex: 1; margin-left: 20px; }
+        canvas { border: 2px solid #ccc; display: block; margin: 20px 0; }
+        label, input, button { font-size: 16px; margin-bottom: 10px; }
+        input[type="number"] { padding: 8px; margin-right: 10px; width: 150px; border: 1px solid #ddd; border-radius: 4px; }
+        button { padding: 10px 20px; background-color: #2e245e; color: #fff; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background-color: #0dc55a; }
+        .panel-buttons { display: flex; flex-direction: column; }
+        .panel-buttons button { margin-bottom: 10px; }
+        input[type="text"] { padding: 8px; width: 100%; border: 1px solid #ddd; border-radius: 4px; font-size: 16px; background-color: #f9f9f9; }
+        .search-container { display: flex; align-items: center; margin-top: 10px; }
     </style>
 </head>
 <body>
@@ -103,46 +28,45 @@
 <h1>Visualizador de Árbol de Nodos</h1>
 
 <div class="container">
-    <!-- Editor de Árbol -->
     <div class="editor">
         <h2>Editor de Árbol</h2>
-        
         <label for="numberInput">Ingrese un número:</label>
         <input type="number" id="numberInput" required>
         <button id="drawButton">Agregar Nodo</button>
-        <button id="clearButton">Limpiar Árbol</button> <!-- Botón para limpiar el árbol -->
-
+        <button id="clearButton">Limpiar Árbol</button>
+        <div id="node-info" style="margin-top: 20px;">
+            <label>Ingrese un nodo para ver detalles:</label>
+            <input type="number" id="infoNodeInput" required>
+            <button id="infoButton">Ver info</button>
+            <!-- Campo para mostrar la información del nodo -->
+            <input type="text" id="nodeInfoOutput" placeholder="Información del nodo" readonly>
+        </div>
         <canvas id="nodeCanvas" width="800" height="400"></canvas>
     </div>
 
-    <!-- Panel de Control -->
     <div class="panel">
         <h2>Panel de Control</h2>
         <div class="panel-buttons">
             <button id="preorderButton">Recorrido Preorden</button>
             <button id="inorderButton">Recorrido Inorden</button>
             <button id="postorderButton">Recorrido Postorden</button>
-
-            <!-- Campo de entrada para buscar un nodo -->
+            <input type="text" id="traversalOutput" placeholder="Resultado" readonly>
             <label for="searchInput">Buscar Nodo:</label>
-            
             <div class="search-container">
                 <input type="number" id="searchInput" placeholder="Ingrese número a buscar">
                 <button id="searchButton">Buscar</button>
             </div>
-            <label for="searchInput">Eliminar Nodo:</label>
-            
+            <input type="text" id="SearchOutput" placeholder="Resultado" readonly>
+            <label for="deleteInput">Eliminar Nodo:</label>
             <div class="search-container">
-                <input type="number" id="deleteInput" placeholder="Ingrese número a eliminar    ">
+                <input type="number" id="deleteInput" placeholder="Ingrese número a eliminar">
                 <button id="deleteButton">Eliminar</button>
             </div>
-            <!-- Cuadro de texto para mostrar el recorrido -->
-            <input type="text" id="traversalOutput" placeholder="Resultado" readonly>
+            <input type="text" id="DeleteOutput" placeholder="Resultado" readonly>
         </div>
     </div>
 </div>
 
-<!-- Importar archivos de JavaScript -->
 <script src="TreeNode.js"></script>
 <script src="BinaryTree.js"></script>
 <script>
@@ -155,75 +79,81 @@
     const postorderButton = document.getElementById('postorderButton');
     const searchButton = document.getElementById('searchButton');
     const deleteButton = document.getElementById('deleteButton');
-    const searchInput = document.getElementById('searchInput');
-    const deleteInput = document.getElementById('deleteInput');
     const clearButton = document.getElementById('clearButton');
+    const infoButton = document.getElementById('infoButton'); // Nuevo botón para mostrar info del nodo
+    const infoNodeInput = document.getElementById('infoNodeInput');
+    const nodeInfoOutput = document.getElementById('nodeInfoOutput'); // Salida de información del nodo
 
-    const tree = new BinaryTree(canvas); // Pasar el canvas al constructor
+    const tree = new BinaryTree(canvas);
 
     drawButton.addEventListener('click', () => {
         const number = parseInt(numberInput.value);
         if (!isNaN(number)) {
             tree.insert(number);
             numberInput.value = '';
-            tree.draw(); // Redibujar el árbol después de insertar un nuevo nodo
+            tree.draw();
         }
     });
+
+    infoButton.addEventListener('click', () => {
+        const number = parseInt(infoNodeInput.value);
+        if (!isNaN(number)) {
+            const node = tree.search(number);
+            if (node) {
+                let colores = node.color
+                if (colores== 'black') {
+                    colores = 'Negro'
+                } else {
+                    colores = 'Rojo'
+                }
+                nodeInfoOutput.value = `Nodo: ${node.value} // Padre: ${node.parent ? node.parent.value : 'No tiene'} // ` +
+                    `Hijo izquierdo: ${node.left ? node.left.value : 'No tiene'} // Hijo derercho: ${node.right ? node.right.value : 'No tiene'} // ` +
+                    `Color: ${colores}`;
+            } else {
+                nodeInfoOutput.value = `Nodo ${number} no encontrado.`;
+            }
+        }
+});
 
     preorderButton.addEventListener('click', () => {
         const result = tree.preorder(tree.root);
         document.getElementById('traversalOutput').value = 'Recorrido Preorden: ' + result.join(', ');
-        tree.draw(); // Redibujar el árbol
+        tree.draw();
     });
 
     inorderButton.addEventListener('click', () => {
         const result = tree.inorder(tree.root);
         document.getElementById('traversalOutput').value = 'Recorrido Inorden: ' + result.join(', ');
-        tree.draw(); // Redibujar el árbol
+        tree.draw();
     });
 
     postorderButton.addEventListener('click', () => {
         const result = tree.postorder(tree.root);
         document.getElementById('traversalOutput').value = 'Recorrido Postorden: ' + result.join(', ');
-        tree.draw(); // Redibujar el árbol
+        tree.draw();
     });
 
     clearButton.addEventListener('click', () => {
-        tree.clear(); // Limpia el árbol
-        document.getElementById('traversalOutput').value = 'Árbol limpiado.'; // Mensaje de confirmación
+        tree.clear();
+        document.getElementById('traversalOutput').value = 'Árbol limpiado.';
     });
 
     searchButton.addEventListener('click', () => {
-    const number = parseInt(searchInput.value);
-    if (!isNaN(number)) {
-        const foundNode = tree.search(number);
-        if (foundNode) {
-            document.getElementById('traversalOutput').value = `Nodo ${number} encontrado.`; // Mensaje de encontrado
-        } else {
-            document.getElementById('traversalOutput').value = `Nodo ${number} no encontrado.`; // Mensaje de no encontrado
+        const number = parseInt(searchInput.value);
+        if (!isNaN(number)) {
+            const foundNode = tree.search(number);
+            document.getElementById('SearchOutput').value = foundNode ? `Nodo ${number} encontrado.` : `Nodo ${number} no encontrado.`;
         }
-    } 
-});
+    });
 
     deleteButton.addEventListener('click', () => {
-    const number = parseInt(deleteInput.value);
-    if (!isNaN(number)) {
-        const deleted = tree.delete(number); // Intenta eliminar el nodo
-        if (deleted) {
-            document.getElementById('traversalOutput').value = `Nodo ${number} no eliminado.`; // Mensaje de eliminación exitosa
-        } else {
-            document.getElementById('traversalOutput').value = `Nodo ${number} eliminado.`; // Mensaje de nodo no encontrado
+        const number = parseInt(deleteInput.value);
+        if (!isNaN(number)) {
+            const deleted = tree.delete(number);
+            document.getElementById('DeleteOutput').value = deleted ? `Nodo ${number} eliminado.` : `Nodo ${number} no encontrado.`;
         }
-    }
-});
-
-    
-
-
-
-    
-    
+    });
 </script>
 
 </body>
-</html>  
+</html>
